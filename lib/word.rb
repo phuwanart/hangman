@@ -4,6 +4,8 @@ class Word
     @categories = []
     @words_list = []
     @random_word_hint = []
+
+    build_words_list
   end
 
   def word
@@ -15,8 +17,6 @@ class Word
   end
 
   def display_menu
-    build_words_list
-
     puts 'Select Category:'
 
     @categories.each_with_index do |c, i|
