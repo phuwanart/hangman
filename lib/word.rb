@@ -27,8 +27,12 @@ class Word
     print '> '
     choice = gets.chomp.to_i
 
-    selected_list = @words_list[(choice.to_i - 1)]
-    @random_word_hint = selected_list.sample
+    @random_word_hint = random_word_hint_from_selected_category(choice.to_i - 1)
+  end
+
+  def random_word_hint_from_selected_category(choice)
+    selected_list = @words_list[choice]
+    selected_list.sample
   end
 
   def build_words_list
