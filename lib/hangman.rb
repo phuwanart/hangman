@@ -1,82 +1,32 @@
-class Hangman
-  def initialize(word)
-    @word = word
-    @guess_count = 10
-    @incorrect_guessed = []
-    @guess_word = generate_guess_word(word)
-    @score = 0
-  end
+# frozen_string_literal: true
 
-  def play
-    loop do
-      puts prompt_message
-      print '> '
+module Hangman
+  class << self
+    # Main loop
+    def play(game_state)
+      loop do
+        puts game_state.prompt_message
 
-      letter = gets.chomp[0]
-      guess(letter)
+        print '> '
 
-      break if won? || lost?
-    end
+        letter = gets.chomp[0]
 
-    puts prompt_message
+        puts 'already guessed' if game_state.already_guess?(letter)
 
-    if won?
-      puts 'You won!'
-    else
-      puts 'You lost!'
-    end
-  end
+        game_state.update_state(game_state.process_state(letter))
 
-  def prompt_message
-    message = [
-      "#{@guess_word} score   #{@score}",
-      "remaining incorrect guess #{@guess_count}"
-    ]
-
-    message << "incorrect guessed: #{@incorrect_guessed.join(',')}" unless @incorrect_guessed.empty?
-
-    message.join(', ')
-  end
-
-  def won?
-    @word == @guess_word
-  end
-
-  def lost?
-    @guess_count.zero?
-  end
-
-  def guess(letter)
-    if @incorrect_guessed.include?(letter)
-      puts 'already guessed'
-    else
-      indices = find_letter_indices_in_word(letter)
-
-      if indices.empty?
-        @incorrect_guessed << letter
-        @guess_count -= 1
-      else
-        update_guess_word(indices)
-        update_score(indices)
+        break if game_state.win? || game_state.lose?
       end
+
+      puts game_state.prompt_message
+
+      if game_state.win?
+        puts 'You won!'
+      else
+        puts 'You lost!'
+      end
+
+      game_state
     end
-  end
-
-  def update_guess_word(indices)
-    indices.each do |i|
-      @guess_word[i] = @word[i]
-    end
-  end
-
-  def find_letter_indices_in_word(letter)
-    @word.chars.each.with_index.select { |c, _| c.to_s.downcase == letter.to_s.downcase }.map(&:last)
-  end
-
-  def update_score(indices)
-    @score += indices.size
-  end
-
-  def generate_guess_word(word)
-    word.to_s.gsub(/[A-Za-z]/, '_')
   end
 end
