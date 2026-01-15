@@ -3,32 +3,6 @@ class GameState
     @state = state
   end
 
-  def process_state(letter)
-    return @state if letter.nil?
-
-    letter = letter.downcase
-
-    return @state unless letter.match?(/[A-Za-z]/)
-
-    return @state if win? || lose?
-
-    return @state unless playing?
-
-    return @state if already_guess?(letter)
-
-    if check_letter_in_word?(letter)
-      handle_correct(letter)
-    else
-      handle_incorrect(letter)
-    end
-
-    @state
-  end
-
-  def update_state(next_state)
-    @state = next_state
-  end
-
   def win?
     @state[:win] == true
   end
